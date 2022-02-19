@@ -25,4 +25,4 @@ def plot_projections(data, labels, label_names, title, nb_components=2,
 
             plt.legend()
             plot_id += 1
-    plt.savefig(f'{title}.png')
+    plt.savefig(f'output/{title}.png')
