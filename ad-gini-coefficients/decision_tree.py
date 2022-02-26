@@ -17,29 +17,6 @@ class Node:
         return self._rhs
 
 
-def gini_index_naive(data, pivot_value):
-    """Computes the Gini Index of the given variable V,
-    according to the 2 classes: v < pivot_value and V >= pivot_value
-    It is assumed that data[:, 0] contains the values of the variable V,
-    and data[:, 1] the observations"""
-
-    inf = [row for row in data if row[0] < pivot_value]
-
-    if not len(inf):
-        return 1
-
-    inf_0 = [row for row in inf if row[1] == 0]
-    g_inf = 1 - ((len(inf_0) / len(inf)) ** 2
-                 + ((len(inf) - len(inf_0)) / len(inf)) ** 2)
-
-    sup = [row for row in data if row[0] >= pivot_value]
-    sup_0 = [row for row in sup if row[1] == 0]
-    g_sup = 1 - ((len(sup_0) / len(sup)) ** 2
-                 + ((len(sup) - len(sup_0)) / len(sup)) ** 2)
-
-    return g_inf * len(inf) / len(data) + g_sup * len(sup) / len(data)
-
-
 def gini_index(data, pivot_value):
     """Computes the Gini Index of the given variable V,
     according to the 2 classes: v < pivot_value and V >= pivot_value
