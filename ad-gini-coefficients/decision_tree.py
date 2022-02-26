@@ -57,4 +57,4 @@ dataset = [[2.771244718, 1.784783929, 0],
            [6.642287351, 3.319983761, 1]]
 
 for obs in dataset:
-    print(f'{gini_index([r[::2] for r in dataset], obs[0])} - {gini_index_naive([r[::2] for r in dataset], obs[0])}')
+    print(f'{gini_index([r[::2] for r in dataset], obs[0])}')
