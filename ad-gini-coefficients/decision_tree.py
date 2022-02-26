@@ -1,3 +1,73 @@
+class Node:
+    def __init__(self, value):
+        self._value = value
+        self._lhs = None
+        self._rhs = None
+
+    @property
+    def value(self):
+        return self._value
+
+    @property
+    def lhs(self):
+        return self._lhs
+
+    @property
+    def rhs(self):
+        return self._rhs
+
+
+def gini_index_naive(data, pivot_value):
+    """Computes the Gini Index of the given variable V,
+    according to the 2 classes: v < pivot_value and V >= pivot_value
+    It is assumed that data[:, 0] contains the values of the variable V,
+    and data[:, 1] the observations"""
+
+    inf = [row for row in data if row[0] < pivot_value]
+
+    if not len(inf):
+        return 1
+
+    inf_0 = [row for row in inf if row[1] == 0]
+    g_inf = 1 - ((len(inf_0) / len(inf)) ** 2
+                 + ((len(inf) - len(inf_0)) / len(inf)) ** 2)
+
+    sup = [row for row in data if row[0] >= pivot_value]
+    sup_0 = [row for row in sup if row[1] == 0]
+    g_sup = 1 - ((len(sup_0) / len(sup)) ** 2
+                 + ((len(sup) - len(sup_0)) / len(sup)) ** 2)
+
+    return g_inf * len(inf) / len(data) + g_sup * len(sup) / len(data)
+
+
+def gini_index(data, pivot_value):
+    """Computes the Gini Index of the given variable V,
+    according to the 2 classes: v < pivot_value and V >= pivot_value
+    It is assumed that data[:, 0] contains the values of the variable V,
+    and data[:, 1] the observations"""
+
+    def partial_gini_index(variable_criteria, observation_value=0):
+        # e.g. All the rows so that V1 < threshold
+        data_subset = [row for row in data if variable_criteria(row)]
+        data_subset_length = len(data_subset)
+        # e.g. All the rows so that V1 < threshold AND observation == 0
+        data_subset_observation = [row for row in data_subset if row[1] == observation_value]
+
+        g_subset = 1 - ((len(data_subset_observation) / data_subset_length) ** 2
+                        + ((data_subset_length - len(data_subset_observation)) / data_subset_length) ** 2)
+
+        return g_subset, data_subset_length
+
+    try:
+        inf, sup = partial_gini_index(lambda row: row[0] < pivot_value), \
+                   partial_gini_index(lambda row: row[0] >= pivot_value)
+
+        return inf[0] * inf[1] / len(data) + sup[0] * sup[1] / len(data)
+
+    except ZeroDivisionError:
+        return 1
+
+
 dataset = [[2.771244718, 1.784783929, 0],
            [1.728571309, 1.169761413, 0],
            [3.678319846, 2.81281357, 0],
@@ -9,3 +79,5 @@ dataset = [[2.771244718, 1.784783929, 0],
            [10.12493903, 3.234550982, 1],
            [6.642287351, 3.319983761, 1]]
 
+for obs in dataset:
+    print(f'{gini_index([r[::2] for r in dataset], obs[0])} - {gini_index_naive([r[::2] for r in dataset], obs[0])}')
