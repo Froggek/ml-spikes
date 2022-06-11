@@ -70,7 +70,7 @@ class MultiLayerPerceptron:
         print()
         for i in range(1, len(self.network)):
             for j in range(self.layers[i]):
-                print("Layer", i + 1, "Neuron", j, self.network[i][j].weights)
+                print("Layer", i, "Neuron", j, self.network[i][j].weights)
         print()
 
     def run(self, x):
@@ -80,13 +80,13 @@ class MultiLayerPerceptron:
         for i in range(1, len(self.network)):
             for j in range(self.layers[i]):
                 self.values[i][j] = self.network[i][j].run(self.values[i - 1])
-        print(" ouput values for each neurones ")
+        print("Output values for each neurones ")
         print(self.values)
         return self.values[-1]
 
 
 mlp = MultiLayerPerceptron(layers=[2, 2, 1])
-##'2 input , puis 2 neurones , sur le premier couche puis 1 sur la seconde couche de sortie
+# '2 input, puis 2 neurones , sur le premier couche puis 1 sur la seconde couche de sortie
 
 mlp.set_weights([[[-10, -10, 15], [15, 15, -10]], [[10, 10, -15]]])
 print("---------------------weight by layer---------------------")
@@ -96,7 +96,7 @@ print("---------------------layer - 1----------------------")
 print(mlp.layers[-1])
 print("-------------------------------------------")
 print("-------mlp-----00------------------")
-print("pour  0 0 = {0:.10f}".format(mlp.run([0,0]) [0]))
+print("pour  0 0 = {0:.10f}".format(mlp.run([0, 0])[0]))
 print("-------mlp-----01------------------")
 print("pour  0 1 = {0:.10f}".format(mlp.run([0,1]) [0]))
 print("-------mlp-----10------------------")

@@ -5,7 +5,7 @@ class Perceptron:
     """A single neuron with the sigmoid activation function.
        Attributes:
           inputs: The number of inputs in the perceptron, not counting the bias.
-          bias:   The bias term. By defaul it's 1.0."""
+          bias:   The bias term. By default, it's 1.0."""
 
     def __init__(self, inputs, bias=1.0):
         """Return a new Perceptron object with the specified number of inputs (+1 for the bias)."""
@@ -14,8 +14,8 @@ class Perceptron:
 
     def run(self, x):
         """Run the perceptron. x is a python list with the input values."""
-        sum = np.dot(np.append(x, self.bias), self.weights)
-        return self.sigmoid(sum)
+        local_sum = np.dot(np.append(x, self.bias), self.weights)
+        return self.sigmoid(local_sum)
 
     def set_weights(self, w_init):
         """Set the weights. w_init is a python list with the weights."""
@@ -51,18 +51,18 @@ class MultiLayerPerceptron:
             self.d[i] = [0.0 for j in range(self.layers[i])]
             if i > 0:  # network[0] is the input layer, so it has no neurons
                 for j in range(self.layers[i]):
-                    print(" neurone :", j)
+                    print("Neuron: ", j)
                     self.network[i].append(Perceptron(inputs=self.layers[i - 1], bias=self.bias))
 
-        self.network = np.array([np.array(x) for x in self.network], dtype=object) # network of neurones
-        self.values = np.array([np.array(x) for x in self.values], dtype=object) # list de list de sorties
+        self.network = np.array([np.array(x) for x in self.network], dtype=object)  # network of neurones
+        self.values = np.array([np.array(x) for x in self.values], dtype=object)  # list de list de sorties
         self.d = np.array([np.array(x) for x in self.d], dtype=object)
 
     def set_weights(self, w_init):
         """Set the weights.
            w_init is a list of lists with the weights for all but the input layer."""
         for i in range(len(w_init)):  # layers
-            for j in range(len(w_init[i])):  # neurones
+            for j in range(len(w_init[i])):  # neurons
                 self.network[i + 1][j].set_weights(w_init[i][j])
 
     def printWeights(self):
@@ -85,6 +85,7 @@ class MultiLayerPerceptron:
 
     def bp(self, x, y):
         """Run a single (x,y) pair with the backpropagation algorithm."""
+
         x = np.array(x, dtype=object)
         y = np.array(y, dtype=object)
 
@@ -100,22 +101,22 @@ class MultiLayerPerceptron:
         # print("-----------------------error---------------")
         # print(error)
         # print("-----------------------/error---------------")
-        MSE = sum(error ** 2) / self.layers[-1]   #nb de neurone sur la couche de sortie
+        MSE = sum(error ** 2) / self.layers[-1]   # nb de neurone sur la couche de sortie
         # print("-----------------------MSE---------------")
         # print(MSE)
         # print("-----------------------/MSE---------------")
         # STEP 3: Calculate the output error terms
         self.d[-1] = outputs * (1 - outputs) * (error)
-        # print("-----------------------error terme---------------")
+        # print("-----------------------error term---------------")
         # print(self.d[-1])
-        # print("-----------------------/error terme---------------")
+        # print("-----------------------/error term---------------")
         # STEP 4: Calculate the error term of each unit on each layer
         for i in reversed(range(1, len(self.network) - 1)):
             for h in range(len(self.network[i])):
                 fwd_error = 0.0
                 for k in range(self.layers[i + 1]):
                     fwd_error += self.network[i + 1][k].weights[h] * self.d[i + 1][k]
-                #print("-----------------------error terme---------------")
+                # print("-----------------------error term---------------")
                 self.d[i][h] = self.values[i][h] * (1 - self.values[i][h]) * fwd_error
         print("----------d array------------------")
         print(self.d)

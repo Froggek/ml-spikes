@@ -25,23 +25,23 @@ for i in range(epochs):
 
     Z = np.dot(H, Wz)  # output layer, no activation
 
-    print("----------Z--------------")#4 poids
+    print("----------Z--------------")  # 4 weighs
     print(Z)
-    print("-------------------------")#2 poids
+    print("-------------------------")  # 2 weighs
     E = Y - Z  # how much we missed (error)  bizarre pas de fonction d'activation
-    print("E", E)
-    dZ = E * L  # delta Z  multiplicate by learning rate
+    print("E error", E)
+    dZ = E * L  # delta Z multiplied by learning rate
     print("dZ", dZ)
     Wz += H.T.dot(dZ)  # update output layer weights
     print("--------------------------------------------")
     print("--------------------------------------------")
-    print(H.T)
+    print("H.T", H.T)
     print("dZ", dZ)
-    print("res",H.T.dot(dZ) )
+    print("res", H.T.dot(dZ))
     print("--------------------------------------------")
     print("--------------------------------------------")
-    print("----Wz modifiés-----------")
-    print(Wz)
+    print("----Wz modified-----------")
+    print("Wz", Wz)
 
     dH = dZ.dot(Wz.T) * sigmoid_(H)  # delta H
     Wh += X.T.dot(dH)  # update hidden layer weights
@@ -50,8 +50,8 @@ for i in range(epochs):
     print("--------Wh-----------")
     print(Wh)
 
-print(Z)  # what have we learnt?
-print("---------weightg couche sortie----------")
-print(Wz)
-print("----------weight couche hidden---------")
-print(Wh)
+print("Z", Z)  # what have we learnt?
+print("---------weight output layer----------")
+print("Wz", Wz)
+print("----------weight hidden layer---------")
+print("Wh", Wh)

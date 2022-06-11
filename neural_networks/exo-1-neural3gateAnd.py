@@ -5,17 +5,17 @@ class Perceptron:  # 1 neuron
     """A single neuron with the sigmoid activation function.
        Attributes:
           inputs: The number of inputs in the perceptron, not counting the bias.
-          bias:   The bias term. By defaul it's 1.0."""
+          bias:   The bias term. By default, it's 1.0."""
 
-    def __init__(self, inputs, bias = 1.0):
+    def __init__(self, inputs, bias=1.0):
         """Return a new Perceptron object with the specified number of inputs (+1 for the bias)."""
-        self.weights = (np.random.rand(inputs+1) * 2) - 1  ### entre -1 et +1
+        self.weights = (np.random.rand(inputs + 1) * 2) - 1  # Between -1 and +1
         self.bias = bias
 
     def run(self, x):
         """Run the perceptron. x is a python list with the input values."""
-        sum = np.dot(np.append(x, self.bias), self.weights)
-        return self.sigmoid(sum)
+        local_sum = np.dot(np.append(x, self.bias), self.weights)
+        return self.sigmoid(local_sum)
 
     def set_weights(self, w_init):
         """Set the weights. w_init is a python list with the weights."""
@@ -23,11 +23,11 @@ class Perceptron:  # 1 neuron
 
     def sigmoid(self, x):
         """Evaluate the sigmoid function for the floating point input x."""
-        print( " je calcule la sortie  apres activation", 1/(1+np.exp(-x)))
-        return 1/(1+np.exp(-x))
+        print("Output after activation", 1 / (1 + np.exp(-x)))
+        return 1 / (1 + np.exp(-x))
 
 
-neuron = Perceptron(2)
+neuron = Perceptron(inputs=2)
 neuron.set_weights([10, 10, -15])  # w0, w1, w2
 print(neuron.weights)
 print("Gate AND :")
