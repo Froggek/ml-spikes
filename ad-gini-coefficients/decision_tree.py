@@ -12,23 +12,31 @@ class Node:
     def lhs(self):
         return self._lhs
 
+    @lhs.setter
+    def lhs(self, value):
+        self._lhs = Node(value)
+
     @property
     def rhs(self):
         return self._rhs
 
+    @rhs.setter
+    def rhs(self, value):
+        self._rhs = Node(value)
 
-def gini_index(data, pivot_value):
+
+def gini_index(data, obs_idx, pivot_value):
     """Computes the Gini Index of the given variable V,
     according to the 2 classes: v < pivot_value and V >= pivot_value
-    It is assumed that data[:, 0] contains the values of the variable V,
-    and data[:, 1] the observations"""
+    It is assumed that data[:, var_idx] contains the values of the variable V,
+    and data[:, obs_idx] the observations"""
 
     def partial_gini_index(variable_criteria, observation_value=0):
         # e.g. All the rows so that V1 < threshold
         data_subset = [row for row in data if variable_criteria(row)]
         data_subset_length = len(data_subset)
         # e.g. All the rows so that V1 < threshold AND observation == 0
-        data_subset_observation = [row for row in data_subset if row[1] == observation_value]
+        data_subset_observation = [row for row in data_subset if row[obs_idx] == observation_value]
 
         g_subset = 1 - ((len(data_subset_observation) / data_subset_length) ** 2
                         + ((data_subset_length - len(data_subset_observation)) / data_subset_length) ** 2)
@@ -45,6 +53,32 @@ def gini_index(data, pivot_value):
         return 1
 
 
+def get_pivot_var_and_value(data, verbose=1):
+    """Given a (sub-)dataset,
+    will determine the variable and value to use for the newt tree's LHS and RHS
+    result (pivot) = (var index, var value)"""
+
+    if verbose > 0:
+        print('=' * 30)
+
+    # Var ID, Var value, Gini idx
+    values = []
+
+    for obs in data:
+        for i in range(2):
+            gini = gini_index(dataset, 2, obs[i])
+            values.append((i, obs[i], gini))
+            if verbose > 1:
+                print(f'Gini(V{i + 1}={obs[i]}) = {gini}')
+
+    min_value = min(values, key=lambda row: row[2])
+    if verbose > 0:
+        print(f'Min value is: {min_value}')
+        print('=' * 30, end='\n\n')
+
+    return min_value[0], min_value[1]
+
+
 dataset = [[2.771244718, 1.784783929, 0],
            [1.728571309, 1.169761413, 0],
            [3.678319846, 2.81281357, 0],
@@ -56,5 +90,13 @@ dataset = [[2.771244718, 1.784783929, 0],
            [10.12493903, 3.234550982, 1],
            [6.642287351, 3.319983761, 1]]
 
-for obs in dataset:
-    print(f'{gini_index([r[::2] for r in dataset], obs[0])}')
+
+root = get_pivot_var_and_value(dataset)
+
+lhs = get_pivot_var_and_value([row for row in dataset if row[root[0]] < root[1]])
+rhs = get_pivot_var_and_value([row for row in dataset if row[root[0]] >= root[1]])
+
+
+
+
+
