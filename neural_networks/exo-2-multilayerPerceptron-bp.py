@@ -111,24 +111,23 @@ class MultiLayerPerceptron:
         # print(self.d[-1])
         # print("-----------------------/error term---------------")
         # STEP 4: Calculate the error term of each unit on each layer
-        for i in reversed(range(1, len(self.network) - 1)):
-            for h in range(len(self.network[i])):
+        for i in reversed(range(1, len(self.network) - 1)):  # For each layer #i
+            for h in range(len(self.network[i])):  # For each neuron #h in the layer #i
                 fwd_error = 0.0
                 for k in range(self.layers[i + 1]):
                     fwd_error += self.network[i + 1][k].weights[h] * self.d[i + 1][k]
                 # print("-----------------------error term---------------")
-                self.d[i][h] = self.values[i][h] * (1 - self.values[i][h]) * fwd_error
+                self.d[i][h] = self.values[i][h] * (1 - self.values[i][h]) * fwd_error  # delta = sigma(1 - sigma) * err
         print("----------d array------------------")
         print(self.d)
         print("----------/d array------------------")
 
-
         # STEPS 5 & 6: Calculate the deltas and update the weights
-        for i in range(1, len(self.network)): #layers
-            for j in range(self.layers[i]):   #neurones
-                for k in range(self.layers[i - 1] + 1):  #input
-                    if k == self.layers[i - 1]:
-                        delta = self.eta * self.d[i][j] * self.bias
+        for i in range(1, len(self.network)):  # layers
+            for j in range(self.layers[i]):   # neuron #j in layer #i
+                for k in range(self.layers[i - 1] + 1):  # input (weighs #k) neuron #j, layer #i
+                    if k == self.layers[i - 1]:  # bias
+                        delta = self.eta * self.d[i][j] * self.bias  # eta = learning rate ("LR")
                     else:
                         delta = self.eta * self.d[i][j] * self.values[i - 1][k]
                     self.network[i][j].weights[k] += delta
@@ -136,20 +135,21 @@ class MultiLayerPerceptron:
 
 
 mlp = MultiLayerPerceptron(layers=[2, 2, 1])
-##'2 input , puis 2 neurones , sur le premier couche puis 1 sur la seconde couche de sortie
+# 2 input , puis 2 neurones , sur le premier couche puis 1 sur la seconde couche de sortie
 
 print(" training neural network for XOR gate ....cost function value.....................")
 listmse=[]
-for i in range(2100):
-    MSE= 0.0 #fonctiond e cout
-    MSE += mlp.bp([0,0], [0])
-    MSE += mlp.bp([0,1], [1])
+nb_epochs = 10000
+for i in range(nb_epochs):  # epoch
+    MSE = 0.0  # cost function
+    MSE += mlp.bp([0, 0], [0])
+    MSE += mlp.bp([0, 1], [1])
     MSE += mlp.bp([1, 0], [1])
     MSE += mlp.bp([1, 1], [0])
     MSE /= 4
-    if (i%100 == 0):
-        print(' cost funtion',MSE)
-        listmse.append(MSE)
+#    if i % 100 == 0:
+#        print('Cost funtion ',MSE)
+#        listmse.append(MSE)
 
 xpoints = np.arange(30)
 print("--------------xpoints--------------------")
@@ -163,8 +163,8 @@ print(ypoints)
 # plt.plot(xpoints, ypoints,'o:r')
 # plt.show()
 
-"""The loss function (or error) is for a single training example,
- while the cost function is over the entire training set (or mini-batch for mini-batch gradient descent).
+"""The LOSS function (or error) is for a single training example,
+ while the COST function is over the entire training set (or mini-batch for mini-batch gradient descent).
   Generally cost and loss functions are synonymous but cost function can contain regularization terms 
   in addition to loss function"""
 
